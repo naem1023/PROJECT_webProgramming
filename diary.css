@@ -1,0 +1,44 @@
+body{
+	padding-top: 70px;
+}
+
+.center{
+	margin-left: auto;
+	margin-right: auto;
+	float: none;
+}
+
+.pageHeader{
+	text-align: center;
+}
+
+.diaryList{
+	padding: 0;
+
+	overflow: scroll;
+}
+
+.fileBox label{
+	margin: 8px 0px;
+	padding: 5px 10px;
+	vertical-align: middle;
+	border: 1px solid;
+	border-radius: .25em;
+	line-height: normal;
+}
+
+.fileBox input[type="file"]{
+	overflow: hidden;
+	width: 1px;
+	height: 1px;
+}
+
+.uploadMsg{
+	display: none;
+	color: green;
+	font-size: 14px;
+}
+
+#saveMsg{
+	
+}

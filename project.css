@@ -1,0 +1,25 @@
+.center{
+	margin-left: auto;
+	margin-right: auto;
+	float: none;
+}
+
+.login{
+	padding: 50px;
+}
+
+.loginIcon{
+	width: 100px;
+	display: inline-block;
+	float: left;
+	margin-right: 30px;
+}
+
+#loginErr{
+	color: red;
+	display: none;
+}
+
+.loginForm{
+	margin-bottom: 30px;
+}

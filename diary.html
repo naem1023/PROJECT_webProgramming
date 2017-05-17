@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Web Diary</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+	<link rel="stylesheet" type="text/css" href="diary.css">
+
+
+
+
+
+
+
+	<script src="https://cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<meta charset="utf-8">
+</head>
+
+
+<body>
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-collapse collapse navbar-left">
+				<ul class="nav nav-pills">
+					<li>
+						<button type="button" class="btn btn-default navbar-btn" aria-label="">
+							<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+						</button>
+					</li>
+					<li>
+						<button type="button" class="btn btn-default navbar-btn" aria-label="">
+							<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+						</button>
+					</li>
+					<li>
+						<form class="navbar-form navbar-left">
+        					<div class="form-group">
+         						<input type="text" class="form-control" placeholder="Search Hash Tag">
+        					</div>
+       						<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+      					</form>
+					</li>
+				</ul>
+			</div>
+
+			<div class="navbar-collapse collapse navbar-right">
+				<ul class="nav navbar-nav">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+							<span class="glyphicon glyphicon-user"></span>
+							<span id="currUserName">
+
+							</span>
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="">Members</a></li>
+							<li><a id="signOut">Sign Out</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+
+		</div>
+
+	</nav>
+
+	<div class="container">
+
+		<div class="row">
+			<div class="center col-md-3">
+				<blockquote>
+					<p class="pageHeader">
+						Admin's diary
+					</p>
+				</blockquote>
+			</div>
+		</div>
+
+		<div class="row">
+			<div id="diaryList" class="diaryList col-md-6 panel panel-default">
+				<div class="panel-body">
+					<ul class="list-group">
+						<li class="list-group-item">
+							<h3>title<small> date</small></h3>
+						</li>
+						<li class="list-group-item">
+							<h3>title<small> date</small></h3>
+						</li>
+						<li class="list-group-item">
+							<h3>title<small> date</small></h3>
+						</li>
+						<li class="list-group-item">
+							<h3>title<small> date</small></h3>
+						</li>
+						<li class="list-group-item">
+							<h3>title<small> date</small></h3>
+						</li>
+						<li class="list-group-item">
+							<h3>title<small> date</small></h3>
+						</li>
+						<li class="list-group-item">
+							<h3>title<small> date</small></h3>
+						</li>
+						<li class="list-group-item">
+							<h3>title<small> date</small></h3>
+						</li>
+						<li class="list-group-item">
+							<h3>title<small> date</small></h3>
+						</li>
+						<li class="list-group-item">
+							<h3>title<small> date</small></h3>
+						</li>
+						<li class="list-group-item">
+							<h3>title<small> date</small></h3>
+						</li>
+						<li class="list-group-item">
+							<h3>title<small> date</small></h3>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<!-- editor -->
+			<div class="col-md-6">
+				<form>
+					<textarea name="editor" id="editor">
+
+					</textarea>
+					<script>
+						CKEDITOR.replace('editor');
+					</script>
+
+					<div class="fileBox">
+						<label for="imgUpload">Image Upload</label>
+						<span class="uploadMsg" id="imgP"></span>
+						<input id="imgUpload" type="file">
+
+						<label for="videoUpload">Video Upload</label>
+						<span class="uploadMsg" id="videoP"></span>
+						<input id="videoUpload" type="file">
+
+						<label for="fileUpload">File Upload</label>
+						<span class="uploadMsg" id="fileP"></span>
+						<input id="fileUpload" type="file">
+
+						<br>
+
+						<input type="text" name="hashTag" class="form-control" placeholder="hash tag">
+						<br>
+					</div>
+					<button id="saveBtn" onclick="saveClick();" class="btn btn-success" type="button">Save</button>
+					<button class="btn btn-warning" type="button">Delete</button>
+					<p id="saveMsg"></p>
+				</form>
+			</div>
+
+		</div>
+
+		<div class="row">
+
+		</div>
+
+
+	</div>
+
+	<script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+	<script>
+		// Initialize Firebase
+		var config = {
+		  apiKey: "AIzaSyCFaNmKkYsUpzwXcCb0w2tSgoGXUugaKic",
+		  authDomain: "wp-project-f8926.firebaseapp.com",
+		  databaseURL: "https://wp-project-f8926.firebaseio.com",
+		  projectId: "wp-project-f8926",
+		  storageBucket: "wp-project-f8926.appspot.com",
+		  messagingSenderId: "593674891494"
+		};
+		firebase.initializeApp(config);
+	</script>
+	<script type="text/javascript" src="diary.js"></script>
+</body>
+</html>
