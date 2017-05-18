@@ -1,27 +1,25 @@
 /*
 {
   "username" : {
-    "article" : [
-      {
-        "title" : "";
-        "id" : "";
-        "content" : "";
-      }.
-      {
-        "title" : "";
-        "id" : "";
-        "content" : "";
-      }
-    ]
+	"article" : [
+	  {
+		"title" : "";
+		"id" : "";
+		"content" : "";
+	  }.
+	  {
+		"title" : "";
+		"id" : "";
+		"content" : "";
+	  }
+	]
   }
 }
 */
 
-
-
 $("#diaryList").height(window.innerHeight-170);
 $(window).resize(function(){
-  $("#diaryList").height(window.innerHeight-170);
+	$("#diaryList").height(window.innerHeight-170);
 });
 
 
@@ -35,9 +33,9 @@ fileButton.addEventListener('change', function(e){
   var file = e.target.files[0];
   //create storage ref
   var storageRef = firebase.storage().ref('file/' + file.name);
-  //Upload
-  storageRef.put(file);
-  $("#fileP").show().text("success");
+	//Upload
+	storageRef.put(file);
+	$("#fileP").show().text("success");
 });
 
 imgButton.addEventListener('change', function(e){
@@ -66,9 +64,9 @@ videoButton.addEventListener('change', function(e){
 var database = firebase.database();
 
 function saveClick(){
-  var ref = database.ref('article');
-  var text = CKEDITOR.instances.editor.getData();
-  var title = $('#title').val();
+	var ref = database.ref('diary');
+	var text = CKEDITOR.instances.editor.getData();
+	var title = $('#title').val();
 
   /*
   var date = new Date();
@@ -78,19 +76,43 @@ function saveClick(){
   var now = year + '-' + month + '-' + day;
   */
   var t = new Date();
-  var now = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+  var now = new Date(t.getFullYear(), t.getMonth(), t.getDate(), t.getTime());
   console.log(now);
 
   var data = {
-    title : title,
-    content : text,
-    date : JSON.stringify(now),
+  	title : title,
+  	content : text,
+  	date : JSON.stringify(now),
   };
   ref.push(data);
   //firebaseRef.child("Text").set(text);
 }
 
 
+
+
+//diary update(list update)
+var dbRef = firebase.database().ref('diary');
+
+//when db is changed, value event occur
+dbRef.on('value', function(snapshot) {
+	console.log("start");
+	console.log(snapshot.val());
+	console.log(snapshot.val().text);
+	console.log(snapshot.key);
+
+	var data = JSON.stringify(snapshot);
+	console.log(data);
+	console.log(Object.keys(snapshot).length-1);
+
+	var keys = Object.keys(data);
+	var length = Object.keys(snapshot).length-1;
+	
+	console.log(keys);
+	for(var i=0; i<length; i++){
+		$("diaryList").append('<li class="list-group-item"><h3>' + data[keys[i]] + "<small>date</small></h3></li>");	
+	}
+});
 
 
 
@@ -102,17 +124,17 @@ function saveClick(){
 //login check
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
-    // User is signed in.
-    var name, email;
+	// User is signed in.
+	var name, email;
 
-    if (user != null) {
-      name = user.displayName;
-      email = user.email;
-    }
+	if (user != null) {
+	  name = user.displayName;
+	  email = user.email;
+	}
 
-    $("#currUserName").text(email);
+	$("#currUserName").text(email);
   } else {
-    // No user is signed in.
+	// No user is signed in.
   }
 });
 */
@@ -121,13 +143,13 @@ firebase.auth().onAuthStateChanged(function(user) {
 //sign out
 $("#signOut").click(
   function(){
-    console.log("aa");
-    firebase.auth().signOut().then(function(){
-    //Sign out success
-      location.href = "login.html";
-    }, function(error){
-      alert(error);
-    });
+	console.log("aa");
+	firebase.auth().signOut().then(function(){
+	//Sign out success
+	  location.href = "login.html";
+	}, function(error){
+	  alert(error);
+	});
   }
 );
 */
