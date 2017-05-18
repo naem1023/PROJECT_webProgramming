@@ -68,16 +68,23 @@ var database = firebase.database();
 function saveClick(){
   var ref = database.ref('article');
   var text = CKEDITOR.instances.editor.getData();
+  var title = $('#title').val();
 
+  /*
   var date = new Date();
   var month = date.getMonth() + 1;
   var day = date.getDate();
   var year = date.getFullYear();
-  var now = month + '-' + day + '-' + year;
+  var now = year + '-' + month + '-' + day;
+  */
+  var t = new Date();
+  var now = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+  console.log(now);
 
   var data = {
-    title : now,
-    content : text
+    title : title,
+    content : text,
+    date : JSON.stringify(now),
   };
   ref.push(data);
   //firebaseRef.child("Text").set(text);

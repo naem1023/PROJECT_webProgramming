@@ -127,8 +127,16 @@
 			</div>
 
 			<!-- editor -->
-			<div class="col-md-6">
-				<form>
+			<div class="articleInput col-md-6 panel panel-default">
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="title" class="col-md-2 control-label">Title</label>
+						<div class="col-md-10">
+							<input id="title" type="text" class="form-control" placeholder="Title">
+						</div>
+					</div>
+					
+
 					<textarea name="editor" id="editor">
 
 					</textarea>
@@ -154,6 +162,7 @@
 						<input type="text" name="hashTag" class="form-control" placeholder="hash tag">
 						<br>
 					</div>
+
 					<button id="saveBtn" onclick="saveClick();" class="btn btn-success" type="button">Save</button>
 					<button class="btn btn-warning" type="button">Delete</button>
 					<p id="saveMsg"></p>
