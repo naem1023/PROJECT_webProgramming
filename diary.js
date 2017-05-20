@@ -1,27 +1,10 @@
-/*
-{
-  "username" : {
-	"article" : [
-	  {
-		"title" : "";
-		"id" : "";
-		"content" : "";
-	  }.
-	  {
-		"title" : "";
-		"id" : "";
-		"content" : "";
-	  }
-	]
-  }
-}
-*/
-
 $("#diaryList").height(window.innerHeight-170);
 $(window).resize(function(){
 	$("#diaryList").height(window.innerHeight-170);
 });
 
+
+var currDiaryKey;
 
 //file upload
 var fileButton  = document.getElementById('fileUpload');
@@ -32,7 +15,7 @@ fileButton.addEventListener('change', function(e){
   //get fileButton
   var file = e.target.files[0];
   //create storage ref
-  var storageRef = firebase.storage().ref('file/' + file.name);
+  var storageRef = firebase.storage().ref('file/' + currDiaryKey + '/' + file.name);
 	//Upload
 	storageRef.put(file);
 	$("#fileP").show().text("success");
@@ -42,7 +25,7 @@ imgButton.addEventListener('change', function(e){
   //get fileButton
   var file = e.target.files[0];
   //create storage ref
-  var storageRef = firebase.storage().ref('img/' + file.name);
+  var storageRef = firebase.storage().ref('img/' + currDiaryKey + '/' + file.name);
   //Upload
   storageRef.put(file);
   $("#imgP").show().text("success");
@@ -52,7 +35,7 @@ videoButton.addEventListener('change', function(e){
   //get fileButton
   var file = e.target.files[0];
   //create storage ref
-  var storageRef = firebase.storage().ref('video/' + file.name);
+  var storageRef = firebase.storage().ref('video/' + currDiaryKey + '/' + file.name);
   //Upload
   storageRef.put(file);
   $("#videoP").show().text("success");
@@ -68,13 +51,6 @@ function saveClick(){
 	var text = CKEDITOR.instances.editor.getData();
 	var title = $('#title').val();
 
-  /*
-  var date = new Date();
-  var month = date.getMonth() + 1;
-  var day = date.getDate();
-  var year = date.getFullYear();
-  var now = year + '-' + month + '-' + day;
-  */
   var t = new Date();
   var now = new Date(t.getFullYear(), t.getMonth(), t.getDate(), t.getHours(), t.getMinutes(), t.getSeconds());
   console.log(now);
@@ -85,9 +61,6 @@ function saveClick(){
   	date : now,
   };
   ref.push(param);
-  //firebaseRef.child("Text").set(text);
-  //ref.update(param);
-
 
   /*
   $.ajax({
@@ -107,39 +80,35 @@ function saveClick(){
 //diary update(list update)
 var dbRef = firebase.database().ref('diary');
 
-//when db is changed, value event occur
+//when db is added, 'child_added' event occur
 dbRef.on('child_added', function(data) {
-	/*
-	console.log("----------------");
-	var list = snapshot.val();
-	console.log(list);
-
-	console.log(list[0].content);
-
-	var data = JSON.stringify(snapshot);
-	console.log(data);
-	console.log(Object.keys(data).length-1);
-
-	var keys = Object.keys(data);
-	
-	console.log(keys);
-
-	var length = Object.keys(snapshot).length-1;
-	for(var i=0; i<length; i++){
-		$("diaryList").append('<li class="list-group-item"><h3>' + data[keys[i]] + "<small>date</small></h3></li>");	
-	}
-	*/
-
 	var a = data.val();
+	/*
 	console.log(a);
 	console.log(data.key);
 	console.log(Object.keys(a).length);
-	$("#diaryList").append('<li class="list-group-item"><h3>' + a.title + "<small>&nbsp;&nbsp;&nbsp;" + a.date + "</small></h3></li>");	
+	*/
+	$("#diaryList").append('<li class="list-group-item"><a onClick="loadDiary(&quot;' + data.key + '&quot;);"><h3>' + a.title + "<small>&nbsp;&nbsp;&nbsp;" + a.date + "</small></h3></a></li>");	
 	
 });
 
 
+//load diary
+function loadDiary(key){
+	firebase.database().ref('diary/' + key).once('value').then(function(snapshot) {
+    // handle read data.
+    var data = snapshot.val();
+		$("#title").val(data.title);
+		CKEDITOR.instances.editor.setData(data.content);
+		
+  });
 
+  dbRef.once('value').then(function(snapshot){
+  	var data = snapshot.val();
+  	console.log(data[key]);
+  	currDiaryKey = key;
+  });
+}
 
 
 
