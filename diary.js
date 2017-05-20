@@ -76,16 +76,29 @@ function saveClick(){
   var now = year + '-' + month + '-' + day;
   */
   var t = new Date();
-  var now = new Date(t.getFullYear(), t.getMonth(), t.getDate(), t.getTime());
+  var now = new Date(t.getFullYear(), t.getMonth(), t.getDate(), t.getHours(), t.getMinutes(), t.getSeconds());
   console.log(now);
-
-  var data = {
+  now = now.toLocaleString();
+  var param = {
   	title : title,
   	content : text,
-  	date : JSON.stringify(now),
+  	date : now,
   };
-  ref.push(data);
+  ref.push(param);
   //firebaseRef.child("Text").set(text);
+  //ref.update(param);
+
+
+  /*
+  $.ajax({
+  	url : "https://wp-project-f8926.firebaseio.com/diary.json",
+  	method : "PATCH",
+  	data : JSON.stringify(param),
+  	success : function(data){
+  		console.log(data);
+  	}
+  });
+  */
 }
 
 
@@ -95,23 +108,34 @@ function saveClick(){
 var dbRef = firebase.database().ref('diary');
 
 //when db is changed, value event occur
-dbRef.on('value', function(snapshot) {
-	console.log("start");
-	console.log(snapshot.val());
-	console.log(snapshot.val().text);
-	console.log(snapshot.key);
+dbRef.on('child_added', function(data) {
+	/*
+	console.log("----------------");
+	var list = snapshot.val();
+	console.log(list);
+
+	console.log(list[0].content);
 
 	var data = JSON.stringify(snapshot);
 	console.log(data);
-	console.log(Object.keys(snapshot).length-1);
+	console.log(Object.keys(data).length-1);
 
 	var keys = Object.keys(data);
-	var length = Object.keys(snapshot).length-1;
 	
 	console.log(keys);
+
+	var length = Object.keys(snapshot).length-1;
 	for(var i=0; i<length; i++){
 		$("diaryList").append('<li class="list-group-item"><h3>' + data[keys[i]] + "<small>date</small></h3></li>");	
 	}
+	*/
+
+	var a = data.val();
+	console.log(a);
+	console.log(data.key);
+	console.log(Object.keys(a).length);
+	$("#diaryList").append('<li class="list-group-item"><h3>' + a.title + "<small>&nbsp;&nbsp;&nbsp;" + a.date + "</small></h3></li>");	
+	
 });
 
 
