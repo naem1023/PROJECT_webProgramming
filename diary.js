@@ -4,6 +4,25 @@ $(window).resize(function(){
 });
 
 
+
+
+//add new diary
+function newDiary(){
+  $("#title").val("");
+  CKEDITOR.instances.editor.setData("");
+}
+
+
+
+
+
+
+
+
+
+
+
+
 var currDiaryKey;
 
 //file upload
