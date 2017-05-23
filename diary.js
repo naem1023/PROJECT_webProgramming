@@ -30,6 +30,7 @@ var fileButton  = document.getElementById('fileUpload');
 var imgButton = document.getElementById('imgUpload');
 var videoButton =document.getElementById('videoUpload');
 
+
 fileButton.addEventListener('change', function(e){
   //get fileButton
   var file = e.target.files[0];
@@ -37,6 +38,10 @@ fileButton.addEventListener('change', function(e){
   var storageRef = firebase.storage().ref('file/' + currDiaryKey + '/' + file.name);
 	//Upload
 	storageRef.put(file);
+
+  var filePath = $(this).val().split("\\");
+  var fileName = filePath[filePath.length-1];
+  $("#fileName").show().text(fileName);
 	$("#fileP").show().text("success");
 });
 
@@ -47,6 +52,10 @@ imgButton.addEventListener('change', function(e){
   var storageRef = firebase.storage().ref('img/' + currDiaryKey + '/' + file.name);
   //Upload
   storageRef.put(file);
+
+  var filePath = $(this).val().split("\\");
+  var fileName = filePath[filePath.length-1];
+  $("#imgName").show().text(fileName);
   $("#imgP").show().text("success");
 });
 
@@ -57,6 +66,10 @@ videoButton.addEventListener('change', function(e){
   var storageRef = firebase.storage().ref('video/' + currDiaryKey + '/' + file.name);
   //Upload
   storageRef.put(file);
+
+  var filePath = $(this).val().split("\\");
+  var fileName = filePath[filePath.length-1];
+  $("#videoName").show().text(fileName);
   $("#videoP").show().text("success");
 });
 

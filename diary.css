@@ -46,3 +46,8 @@ body{
 .articleInput{
 	padding: 20px 10px;
 }
+
+.uploadFileName{
+	display: none;
+	font-size: 14px;
+}
