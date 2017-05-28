@@ -6,10 +6,13 @@ $(window).resize(function(){
 
 
 
+var currDiaryKey;
+
 //add new diary
 function newDiary(){
   $("#title").val("");
   CKEDITOR.instances.editor.setData("");
+  currDiaryKey = null;
 }
 
 
@@ -22,8 +25,6 @@ function newDiary(){
 
 
 
-
-var currDiaryKey;
 
 //file upload
 var fileButton  = document.getElementById('fileUpload');
@@ -92,7 +93,16 @@ function saveClick(){
   	content : text,
   	date : now,
   };
-  ref.push(param);
+  
+
+  //new diary
+	if(currDiaryKey == null){
+		ref.push(param);
+	}
+	//rewrite diary
+	else{
+		ref.child(currDiaryKey).update(param);
+	}
 
   /*
   $.ajax({
@@ -110,20 +120,40 @@ function saveClick(){
 
 
 //diary update(list update)
+//when db is added, 'child_added' event occur
 var dbRef = firebase.database().ref('diary');
 
-//when db is added, 'child_added' event occur
+/*
 dbRef.on('child_added', function(data) {
+	var a = data.val();
+	
+	console.log(a);
+	console.log(data.key);
+	console.log(Object.keys(a).length);
+	
+	$("#diaryList").append('<li class="list-group-item"><a onClick="loadDiary(&quot;' + data.key + '&quot;);"><h3>' + a.title + "<small>&nbsp;&nbsp;&nbsp;" + a.date + "</small></h3></a></li>");	
+});
+*/
+
+dbRef.on('value', function(data) {
 	var a = data.val();
 	/*
 	console.log(a);
 	console.log(data.key);
 	console.log(Object.keys(a).length);
+	var length = Object.keys(a).length;
 	*/
-	$("#diaryList").append('<li class="list-group-item"><a onClick="loadDiary(&quot;' + data.key + '&quot;);"><h3>' + a.title + "<small>&nbsp;&nbsp;&nbsp;" + a.date + "</small></h3></a></li>");	
 	
+	//temp is key
+	for(var temp in a){
+		$("#diaryList").append('<li class="list-group-item"><a onClick="loadDiary(&quot;' + temp + '&quot;);"><h3>' + a[temp].title + "<small>&nbsp;&nbsp;&nbsp;" + a[temp].date + "</small></h3></a></li>");	
+	}
 });
 
+//when some diary is deleted, fresh list
+dbRef.on('child_removed', function(data) {
+	
+});
 
 //load diary
 function loadDiary(key){
@@ -132,9 +162,10 @@ function loadDiary(key){
     var data = snapshot.val();
 		$("#title").val(data.title);
 		CKEDITOR.instances.editor.setData(data.content);
-		
+
   });
 
+	//get key to update uploaded files
   dbRef.once('value').then(function(snapshot){
   	var data = snapshot.val();
   	console.log(data[key]);
@@ -143,6 +174,17 @@ function loadDiary(key){
 }
 
 
+//del diary
+function delClick(){
+	if(currDiaryKey == null){
+
+	}
+	else{
+		var delRef = firebase.database().ref('diary');
+		delRef.child(currDiaryKey).remove();
+		newDiary();
+	}
+}
 
 
 /*
