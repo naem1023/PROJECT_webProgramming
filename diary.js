@@ -164,7 +164,7 @@ function loadDiary(key){
 //del diary
 function delClick(){
 	if(currDiaryKey == null){
-
+		//no diary is wirten
 	}
 	else{
 		var delRef = firebase.database().ref('diary');
