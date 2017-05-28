@@ -94,10 +94,13 @@ function saveClick(){
   	date : now,
   };
   
-
+  var key = ref.push().key;
+  currDiaryKey = key;
   //new diary
 	if(currDiaryKey == null){
-		ref.push(param);
+		ref.child(key).update(param);
+		//ref.push(param);
+		//console.log(ref.orderByChild('date').equalTo(now).parent().key);
 	}
 	//rewrite diary
 	else{
@@ -116,26 +119,15 @@ function saveClick(){
   */
 }
 
-
+var dbRef = firebase.database().ref('diary');
 
 
 //diary update(list update)
-//when db is added, 'child_added' event occur
-var dbRef = firebase.database().ref('diary');
-
-/*
-dbRef.on('child_added', function(data) {
-	var a = data.val();
-	
-	console.log(a);
-	console.log(data.key);
-	console.log(Object.keys(a).length);
-	
-	$("#diaryList").append('<li class="list-group-item"><a onClick="loadDiary(&quot;' + data.key + '&quot;);"><h3>' + a.title + "<small>&nbsp;&nbsp;&nbsp;" + a.date + "</small></h3></a></li>");	
-});
-*/
+//when db is changed, 'value' event occur
 
 dbRef.on('value', function(data) {
+	$("#diaryList").html(null);
+
 	var a = data.val();
 	/*
 	console.log(a);
@@ -143,16 +135,11 @@ dbRef.on('value', function(data) {
 	console.log(Object.keys(a).length);
 	var length = Object.keys(a).length;
 	*/
-	
+
 	//temp is key
 	for(var temp in a){
 		$("#diaryList").append('<li class="list-group-item"><a onClick="loadDiary(&quot;' + temp + '&quot;);"><h3>' + a[temp].title + "<small>&nbsp;&nbsp;&nbsp;" + a[temp].date + "</small></h3></a></li>");	
 	}
-});
-
-//when some diary is deleted, fresh list
-dbRef.on('child_removed', function(data) {
-	
 });
 
 //load diary
