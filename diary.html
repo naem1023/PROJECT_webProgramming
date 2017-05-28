@@ -10,12 +10,6 @@
 
 	<link rel="stylesheet" type="text/css" href="diary.css">
 
-
-
-
-
-
-
 	<script src="https://cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<meta charset="utf-8">
@@ -71,19 +65,8 @@
 	</nav>
 
 	<div class="container">
-
 		<div class="row">
-			<div class="center col-md-3">
-				<blockquote>
-					<p class="pageHeader">
-						Admin's diary
-					</p>
-				</blockquote>
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="diaryList col-md-6 panel panel-default">
+			<div class="col-md-6 panel panel-default">
 				<div class="panel-body">
 					<ul id="diaryList" class="list-group">
 						
@@ -109,8 +92,7 @@
 						CKEDITOR.replace('editor');
 					</script>
 
-					<div class="fileBox">
-						
+					<div class="fileBox">	
 						<label for="imgUpload">Image Upload</label>
 						<span class="uploadFileName" id="imgName"></span>
 						<span class="uploadMsg" id="imgP"></span>
@@ -141,12 +123,6 @@
 			</div>
 
 		</div>
-
-		<div class="row">
-
-		</div>
-
-
 	</div>
 
 	<script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>

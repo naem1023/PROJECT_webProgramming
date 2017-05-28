@@ -119,12 +119,25 @@ function saveClick(){
   */
 }
 
+
+var countList = 9;
+
 var dbRef = firebase.database().ref('diary');
 
 
+$("#diaryList").scroll(
+	function(){
+		var maxHeight = $("#diaryList").height();
+		var currScroll = $("#diaryList").scrollTop();
+
+		if(maxHeight <= currScroll){
+			console.log("too many!");
+		}
+	}
+);
+
 //diary update(list update)
 //when db is changed, 'value' event occur
-
 dbRef.on('value', function(data) {
 	$("#diaryList").html(null);
 
@@ -136,8 +149,12 @@ dbRef.on('value', function(data) {
 	var length = Object.keys(a).length;
 	*/
 
+	var i = 1;
 	//temp is key
 	for(var temp in a){
+		if(i > countList){
+			break;
+		}
 		$("#diaryList").append('<li class="list-group-item"><a onClick="loadDiary(&quot;' + temp + '&quot;);"><h3>' + a[temp].title + "<small>&nbsp;&nbsp;&nbsp;" + a[temp].date + "</small></h3></a></li>");	
 	}
 });
@@ -155,7 +172,6 @@ function loadDiary(key){
 	//get key to update uploaded files
   dbRef.once('value').then(function(snapshot){
   	var data = snapshot.val();
-  	console.log(data[key]);
   	currDiaryKey = key;
   });
 }
