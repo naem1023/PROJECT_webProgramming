@@ -1,5 +1,4 @@
-
-
+//auto resize diary list
 var diaryListHeight = window.innerHeight-170;
 $("#diaryList").height(diaryListHeight);
 $(window).resize(function(){
@@ -10,12 +9,18 @@ $(window).resize(function(){
 
 
 var currDiaryKey;
+var imgName;
+var fileName;
+var videoName;
 
 //add new diary
 function newDiary(){
   $("#title").val("");
   CKEDITOR.instances.editor.setData("");
   currDiaryKey = null;
+  imgName = null;
+  fileName = null;
+  videoName = null;
 }
 
 
@@ -40,12 +45,14 @@ fileButton.addEventListener('change', function(e){
   var file = e.target.files[0];
   //create storage ref
   var storageRef = firebase.storage().ref('file/' + currDiaryKey + '/' + file.name);
-	//Upload
-	storageRef.put(file);
+  
+  //Upload
+  storageRef.put(file);
 
   var filePath = $(this).val().split("\\");
-  var fileName = filePath[filePath.length-1];
-  $("#fileName").show().text(fileName);
+  var _fileName = filePath[filePath.length-1];
+  fileName = _fileName;
+  $("#fileName").show().text(_fileName);
 	$("#fileP").show().text("success");
 });
 
@@ -58,8 +65,9 @@ imgButton.addEventListener('change', function(e){
   storageRef.put(file);
 
   var filePath = $(this).val().split("\\");
-  var fileName = filePath[filePath.length-1];
-  $("#imgName").show().text(fileName);
+  var _fileName = filePath[filePath.length-1];
+  imgName = _fileName;
+  $("#imgName").show().text(_fileName);
   $("#imgP").show().text("success");
 });
 
@@ -72,8 +80,9 @@ videoButton.addEventListener('change', function(e){
   storageRef.put(file);
 
   var filePath = $(this).val().split("\\");
-  var fileName = filePath[filePath.length-1];
-  $("#videoName").show().text(fileName);
+  var _fileName = filePath[filePath.length-1];
+  videoName = _fileName;
+  $("#videoName").show().text(_fileName);
   $("#videoP").show().text("success");
 });
 
@@ -95,6 +104,9 @@ function saveClick(){
   	title : title,
   	content : text,
   	date : now,
+  	file : fileName,
+  	img : imgName,
+  	video : videoName,
   };
   
   var key = ref.push().key;
@@ -184,7 +196,23 @@ function loadDiary(key){
     var data = snapshot.val();
 		$("#title").val(data.title);
 		CKEDITOR.instances.editor.setData(data.content);
+  
+  	firebase.storage().child('img/' + currDiaryKey + '/' + data.img).getDownloadURL().then(function(url) {
+	  // This can be downloaded directly:
+	  var xhr = new XMLHttpRequest();
+	  xhr.responseType = 'blob';
+	  xhr.onload = function(event) {
+	    var blob = xhr.response;
+	  };
+	  xhr.open('GET', url);
+	  xhr.send();
 
+	  // Or inserted into an <img> element:
+	  var img = document.getElementById('imgBox');
+	  img.src = url;
+	}).catch(function(error) {
+	  // Handle any errors
+	});
   });
 
 	//get key to update uploaded files

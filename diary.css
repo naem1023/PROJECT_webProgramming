@@ -50,3 +50,7 @@ body{
 	display: none;
 	font-size: 14px;
 }
+
+#imgBox{
+	width: 300px;
+}
