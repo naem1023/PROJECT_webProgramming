@@ -1,6 +1,9 @@
-$("#diaryList").height(window.innerHeight-170);
+
+
+var diaryListHeight = window.innerHeight-170;
+$("#diaryList").height(diaryListHeight);
 $(window).resize(function(){
-	$("#diaryList").height(window.innerHeight-170);
+	$("#diaryList").height(diaryListHeight);
 });
 
 
@@ -120,18 +123,24 @@ function saveClick(){
 }
 
 
-var countList = 9;
+var countList = 12;
 
 var dbRef = firebase.database().ref('diary');
 
 
 $("#diaryList").scroll(
 	function(){
-		var maxHeight = $("#diaryList").height();
-		var currScroll = $("#diaryList").scrollTop();
+		var maxHeight = diaryListHeight;
+		var currScroll = $("#diaryList").scrollTop() + $("#diaryList").prop("scrollHeight");
 
+		console.log("maxHeight " + maxHeight);
+		console.log("diaryListHeight " + diaryListHeight);
 		if(maxHeight <= currScroll){
 			console.log("too many!");
+			countList += 9;
+			dbRef.once('value').then(function(snapshot){
+				printDiaryList(snapshot.val());
+			});
 		}
 	}
 );
@@ -139,7 +148,7 @@ $("#diaryList").scroll(
 //diary update(list update)
 //when db is changed, 'value' event occur
 dbRef.on('value', function(data) {
-	$("#diaryList").html(null);
+	
 
 	var a = data.val();
 	/*
@@ -149,15 +158,22 @@ dbRef.on('value', function(data) {
 	var length = Object.keys(a).length;
 	*/
 
+	printDiaryList(a);
+});
+
+function printDiaryList(data){
+	$("#diaryList").html(null);
 	var i = 1;
 	//temp is key
-	for(var temp in a){
+	for(var temp in data){
 		if(i > countList){
 			break;
 		}
-		$("#diaryList").append('<li class="list-group-item"><a onClick="loadDiary(&quot;' + temp + '&quot;);"><h3>' + a[temp].title + "<small>&nbsp;&nbsp;&nbsp;" + a[temp].date + "</small></h3></a></li>");	
+		$("#diaryList").append('<li class="list-group-item"><a onClick="loadDiary(&quot;' + temp + '&quot;);"><h3>' + data[temp].title + "<small>&nbsp;&nbsp;&nbsp;" + data[temp].date + "</small></h3></a></li>");	
+		i++;
 	}
-});
+}
+
 
 //load diary
 function loadDiary(key){
