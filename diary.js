@@ -28,20 +28,20 @@ var fileButton  = document.getElementById('fileUpload');
 var imgButton = document.getElementById('imgUpload');
 var videoButton =document.getElementById('videoUpload');
 
-var event = document.createEvent("HTMLEvents");
-event.initEvent("save", true, false);
+//make an event
+//save event -> when save event is occur, all files are saved
+var event = jQuery.Event("save");
+event.normFile = null;
+event.imgFile = null;
+event.videoFile = null;
 
-fileButton.addEventListener('save', function(e){
+fileButton.addEventListener('change', function(e){
   //get fileButton
   var file = e.target.files[0];
   if(file != null){
-  	//create storage ref
-	  var storageRef = firebase.storage().ref('file/' + currDiaryKey + '/' + file.name);
-	  
-	  //Upload
-	  storageRef.put(file);
+  	event.normFile = file;
 
-	  var filePath = $(this).val().split("\\");
+  	var filePath = $(this).val().split("\\");
 	  var _fileName = filePath[filePath.length-1];
 	  fileName = _fileName;
 	  $("#fileName").show().text(_fileName);
@@ -49,17 +49,15 @@ fileButton.addEventListener('save', function(e){
   }
 });
 
-imgButton.addEventListener('save', function(e){
+imgButton.addEventListener('change', function(e){
 	console.log("img saved");
   //get fileButton
   var file = e.target.files[0];
-  //create storage ref
+  
   if(file != null){
-  	var storageRef = firebase.storage().ref('img/' + currDiaryKey + '/' + file.name);
-	  //Upload
-	  storageRef.put(file);
+  	event.imgFile = file;
 
-	  var filePath = $(this).val().split("\\");
+  	 var filePath = $(this).val().split("\\");
 	  var _fileName = filePath[filePath.length-1];
 	  imgName = _fileName;
 	  $("#imgName").show().text(_fileName);
@@ -67,14 +65,11 @@ imgButton.addEventListener('save', function(e){
   }
 });
 
-videoButton.addEventListener('save', function(e){
+videoButton.addEventListener('change', function(e){
   //get fileButton
   var file = e.target.files[0];
   if(file != null){
-  	//create storage ref
-	  var storageRef = firebase.storage().ref('video/' + currDiaryKey + '/' + file.name);
-	  //Upload
-	  storageRef.put(file);
+  	event.videoFile = file;
 
 	  var filePath = $(this).val().split("\\");
 	  var _fileName = filePath[filePath.length-1];
@@ -84,6 +79,40 @@ videoButton.addEventListener('save', function(e){
   }
 });
 
+/*
+$("#fileUpload").on('save', function(e){
+	var file = e.normFile;
+
+	//create storage ref
+  var storageRef = firebase.storage().ref('file/' + currDiaryKey + '/' + file.name);
+  //Upload
+  storageRef.put(file);  
+});
+*/
+
+fileButton.addEventListener('save', function(e){
+	console.log("dd");
+});
+
+$("#imgUpload").on('save', function(e){
+	var file = e.imgFile;
+
+	//create storage ref
+	var storageRef = firebase.storage().ref('img/' + currDiaryKey + '/' + file.name);
+  //Upload
+  storageRef.put(file);
+});
+
+
+$("#videoUpload").on('save', function(e){
+	var file = e.videoFile;
+
+	//create storage ref
+  var storageRef = firebase.storage().ref('video/' + currDiaryKey + '/' + file.name);
+  //Upload
+  storageRef.put(file);
+
+});
 
 
 //text upload
@@ -109,9 +138,10 @@ function saveClick(){
   
   var key = ref.push().key;
   currDiaryKey = key;
-  $("#fileUpload").trigger('save');
-  $("#imgUpload").trigger('save');
-  $("#videoUpload").trigger('save');
+
+  $("#fileUpload").trigger(event);
+  $("#imgUpload").trigger(event);
+  $("#videoUpload").trigger(event);
 
   //new diary
 	if(currDiaryKey == null){
@@ -171,7 +201,6 @@ dbRef.on('value', function(data) {
 	console.log(Object.keys(a).length);
 	var length = Object.keys(a).length;
 	*/
-
 	printDiaryList(a);
 });
 
