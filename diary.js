@@ -8,10 +8,10 @@ $(window).resize(function(){
 
 
 
-var currDiaryKey;
-var imgName;
-var fileName;
-var videoName;
+var currDiaryKey = null;
+var imgName = null;
+var fileName = null;
+var videoName = null;
 
 //add new diary
 function newDiary(){
@@ -23,67 +23,65 @@ function newDiary(){
   videoName = null;
 }
 
-
-
-
-
-
-
-
-
-
-
-
 //file upload
 var fileButton  = document.getElementById('fileUpload');
 var imgButton = document.getElementById('imgUpload');
 var videoButton =document.getElementById('videoUpload');
 
+var event = document.createEvent("HTMLEvents");
+event.initEvent("save", true, false);
 
-fileButton.addEventListener('change', function(e){
+fileButton.addEventListener('save', function(e){
   //get fileButton
   var file = e.target.files[0];
-  //create storage ref
-  var storageRef = firebase.storage().ref('file/' + currDiaryKey + '/' + file.name);
-  
-  //Upload
-  storageRef.put(file);
+  if(file != null){
+  	//create storage ref
+	  var storageRef = firebase.storage().ref('file/' + currDiaryKey + '/' + file.name);
+	  
+	  //Upload
+	  storageRef.put(file);
 
-  var filePath = $(this).val().split("\\");
-  var _fileName = filePath[filePath.length-1];
-  fileName = _fileName;
-  $("#fileName").show().text(_fileName);
-	$("#fileP").show().text("success");
+	  var filePath = $(this).val().split("\\");
+	  var _fileName = filePath[filePath.length-1];
+	  fileName = _fileName;
+	  $("#fileName").show().text(_fileName);
+		$("#fileP").show().text("success");	
+  }
 });
 
-imgButton.addEventListener('change', function(e){
+imgButton.addEventListener('save', function(e){
+	console.log("img saved");
   //get fileButton
   var file = e.target.files[0];
   //create storage ref
-  var storageRef = firebase.storage().ref('img/' + currDiaryKey + '/' + file.name);
-  //Upload
-  storageRef.put(file);
+  if(file != null){
+  	var storageRef = firebase.storage().ref('img/' + currDiaryKey + '/' + file.name);
+	  //Upload
+	  storageRef.put(file);
 
-  var filePath = $(this).val().split("\\");
-  var _fileName = filePath[filePath.length-1];
-  imgName = _fileName;
-  $("#imgName").show().text(_fileName);
-  $("#imgP").show().text("success");
+	  var filePath = $(this).val().split("\\");
+	  var _fileName = filePath[filePath.length-1];
+	  imgName = _fileName;
+	  $("#imgName").show().text(_fileName);
+	  $("#imgP").show().text("success");	
+  }
 });
 
-videoButton.addEventListener('change', function(e){
+videoButton.addEventListener('save', function(e){
   //get fileButton
   var file = e.target.files[0];
-  //create storage ref
-  var storageRef = firebase.storage().ref('video/' + currDiaryKey + '/' + file.name);
-  //Upload
-  storageRef.put(file);
+  if(file != null){
+  	//create storage ref
+	  var storageRef = firebase.storage().ref('video/' + currDiaryKey + '/' + file.name);
+	  //Upload
+	  storageRef.put(file);
 
-  var filePath = $(this).val().split("\\");
-  var _fileName = filePath[filePath.length-1];
-  videoName = _fileName;
-  $("#videoName").show().text(_fileName);
-  $("#videoP").show().text("success");
+	  var filePath = $(this).val().split("\\");
+	  var _fileName = filePath[filePath.length-1];
+	  videoName = _fileName;
+	  $("#videoName").show().text(_fileName);
+	  $("#videoP").show().text("success");	
+  }
 });
 
 
@@ -111,6 +109,10 @@ function saveClick(){
   
   var key = ref.push().key;
   currDiaryKey = key;
+  $("#fileUpload").trigger('save');
+  $("#imgUpload").trigger('save');
+  $("#videoUpload").trigger('save');
+
   //new diary
 	if(currDiaryKey == null){
 		ref.child(key).update(param);
@@ -194,10 +196,10 @@ function loadDiary(key){
 	firebase.database().ref('diary/' + key).once('value').then(function(snapshot) {
     // handle read data.
     var data = snapshot.val();
-		$("#title").val(data.title);
-		CKEDITOR.instances.editor.setData(data.content);
+	$("#title").val(data.title);
+	CKEDITOR.instances.editor.setData(data.content);
   
-  	firebase.storage().child('img/' + currDiaryKey + '/' + data.img).getDownloadURL().then(function(url) {
+  	firebase.storage().ref().child('img/' + currDiaryKey + '/' + data.img).getDownloadURL().then(function(url) {
 	  // This can be downloaded directly:
 	  var xhr = new XMLHttpRequest();
 	  xhr.responseType = 'blob';
@@ -212,6 +214,7 @@ function loadDiary(key){
 	  img.src = url;
 	}).catch(function(error) {
 	  // Handle any errors
+	  console.log(error);
 	});
   });
 
