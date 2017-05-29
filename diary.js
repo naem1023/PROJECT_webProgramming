@@ -130,14 +130,16 @@ var dbRef = firebase.database().ref('diary');
 
 $("#diaryList").scroll(
 	function(){
-		var maxHeight = diaryListHeight;
-		var currScroll = $("#diaryList").scrollTop() + $("#diaryList").prop("scrollHeight");
+		var maxHeight = $("#diaryList").prop("scrollHeight");
+		var currScroll = $("#diaryList").scrollTop() + diaryListHeight;
 
 		console.log("maxHeight " + maxHeight);
-		console.log("diaryListHeight " + diaryListHeight);
+		console.log("scrollTop " + $("#diaryList").scrollTop());
+		console.log("diaryListHeight" + diaryListHeight);
+		console.log();
 		if(maxHeight <= currScroll){
-			console.log("too many!");
-			countList += 9;
+			console.log("----------------------------------------");
+			countList += 5;
 			dbRef.once('value').then(function(snapshot){
 				printDiaryList(snapshot.val());
 			});
@@ -148,8 +150,6 @@ $("#diaryList").scroll(
 //diary update(list update)
 //when db is changed, 'value' event occur
 dbRef.on('value', function(data) {
-	
-
 	var a = data.val();
 	/*
 	console.log(a);
@@ -161,6 +161,8 @@ dbRef.on('value', function(data) {
 	printDiaryList(a);
 });
 
+//print diary list
+//demand with countList
 function printDiaryList(data){
 	$("#diaryList").html(null);
 	var i = 1;
