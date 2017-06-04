@@ -124,9 +124,9 @@ function saveClick(){
 	var title = $('#title').val();
 
   var t = new Date();
-  var now = new Date(t.getFullYear(), t.getMonth(), t.getDate(), t.getHours(), t.getMinutes(), t.getSeconds());
-  console.log(now);
-  now = now.toLocaleString();
+  //var now = new Date(t.getFullYear(), t.getMonth(), t.getDate(), t.getHours(), t.getMinutes(), t.getSeconds());
+  console.log(t.getTime());
+  now = -(t.getTime());
   var param = {
   	title : title,
   	content : text,
@@ -139,9 +139,11 @@ function saveClick(){
   var key = ref.push().key;
   currDiaryKey = key;
 
+  /*
   $("#fileUpload").trigger(event);
   $("#imgUpload").trigger(event);
   $("#videoUpload").trigger(event);
+	*/
 
   //new diary
 	if(currDiaryKey == null){
@@ -184,7 +186,7 @@ $("#diaryList").scroll(
 		if(maxHeight <= currScroll){
 			console.log("----------------------------------------");
 			countList += 5;
-			dbRef.once('value').then(function(snapshot){
+			dbRef.orderByChild("date").once('value').then(function(snapshot){
 				printDiaryList(snapshot.val());
 			});
 		}
@@ -193,7 +195,7 @@ $("#diaryList").scroll(
 
 //diary update(list update)
 //when db is changed, 'value' event occur
-dbRef.on('value', function(data) {
+dbRef.orderByChild("date").on("value", function(data) {
 	var a = data.val();
 	/*
 	console.log(a);
@@ -201,6 +203,9 @@ dbRef.on('value', function(data) {
 	console.log(Object.keys(a).length);
 	var length = Object.keys(a).length;
 	*/
+
+	console.log(a);
+	//var b = 
 	printDiaryList(a);
 });
 
@@ -210,6 +215,7 @@ function printDiaryList(data){
 	$("#diaryList").html(null);
 	var i = 1;
 	//temp is key
+
 	for(var temp in data){
 		if(i > countList){
 			break;
@@ -218,6 +224,7 @@ function printDiaryList(data){
 		i++;
 	}
 }
+
 
 
 //load diary
