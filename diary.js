@@ -114,6 +114,34 @@ $("#videoUpload").on('save', function(e){
 
 });
 
+function hashCheck(data){
+	var hash = new Array();
+	var temp1 = new Array();
+	
+	var splitData = data.split('\n\n');
+
+	console.log(splitData);
+
+	for(var i in splitData){
+		i = i.replace(/(<([^>]+)>)/ig,"");
+		console.log(i);
+		temp1.push(i);
+	}
+
+	console.log(temp1);
+
+	for(var word in temp1){
+		if(word.indexOf('#') == 0){
+			hash.push(word);
+		}
+	}
+
+oriText = '<div>Remove Div tag only</div>';
+newText = oriText.replace(/(<([^>]+)>)/ig,"");
+alert(newText);
+
+	return hash;
+}
 
 //text upload
 var database = firebase.database();
@@ -122,10 +150,11 @@ function saveClick(){
 	var ref = database.ref('diary');
 	var text = CKEDITOR.instances.editor.getData();
 	var title = $('#title').val();
+	var hash = hashCheck(text);
 
   var t = new Date();
   //var now = new Date(t.getFullYear(), t.getMonth(), t.getDate(), t.getHours(), t.getMinutes(), t.getSeconds());
-  console.log(t.getTime());
+  console.log(hash);
   now = -(t.getTime());
   var param = {
   	title : title,
@@ -134,6 +163,7 @@ function saveClick(){
   	file : fileName,
   	img : imgName,
   	video : videoName,
+  	hash : hash,
   };
   
   var key = ref.push().key;
@@ -308,3 +338,4 @@ $("#signOut").click(
   }
 );
 */
+
