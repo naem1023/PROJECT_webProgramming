@@ -142,6 +142,8 @@ function hashCheck(data){
 	return hash;
 }
 
+
+
 //text upload
 var database = firebase.database();
 
@@ -203,6 +205,14 @@ var countList = 12;
 var dbRef = firebase.database().ref('diary');
 
 
+function searchHash(){
+	var hash = $("#hashBox").val();
+	hash = "#" + hash + "\n";
+	dbRef.orderByChild("date").once('value').then(function(snapshot){
+		printDiaryList(snapshot.val(), hash);
+	});
+}
+
 $("#diaryList").scroll(
 	function(){
 		var maxHeight = $("#diaryList").prop("scrollHeight");
@@ -216,7 +226,7 @@ $("#diaryList").scroll(
 			console.log("----------------------------------------");
 			countList += 5;
 			dbRef.orderByChild("date").once('value').then(function(snapshot){
-				printDiaryList(snapshot.val());
+				printDiaryList(snapshot.val(), null);
 			});
 		}
 	}
@@ -234,23 +244,44 @@ dbRef.orderByChild("date").on("value", function(data) {
 	*/
 
 	console.log(a);
-	//var b = 
-	printDiaryList(a);
+	printDiaryList(a, null);
 });
 
 //print diary list
 //demand with countList
-function printDiaryList(data){
+function printDiaryList(data, hash){
 	$("#diaryList").html(null);
 	var i = 1;
 	//temp is key
 
-	for(var temp in data){
-		if(i > countList){
-			break;
+	console.log("hash is " + hash);
+
+	if(hash == null){
+		for(var temp in data){
+			if(i > countList){
+				break;
+			}
+			
+			$("#diaryList").append('<li class="list-group-item"><a onClick="loadDiary(&quot;' + temp + '&quot;);"><h3>' + data[temp].title + "<small>&nbsp;&nbsp;&nbsp;" + data[temp].date + "</small></h3></a></li>");	
+			i++;
 		}
-		$("#diaryList").append('<li class="list-group-item"><a onClick="loadDiary(&quot;' + temp + '&quot;);"><h3>' + data[temp].title + "<small>&nbsp;&nbsp;&nbsp;" + data[temp].date + "</small></h3></a></li>");	
-		i++;
+	}
+
+	else{
+		for(var temp in data){
+			if(i > countList){
+				break;
+			}
+			data[temp].hash.forEach(function(i){
+				console.log(data[temp].title + "'s hash is " + i);
+				if(i == hash){
+					console.log("same!");
+					$("#diaryList").append('<li class="list-group-item"><a onClick="loadDiary(&quot;' + temp + '&quot;);"><h3>' + data[temp].title + "<small>&nbsp;&nbsp;&nbsp;" + data[temp].date + "</small></h3></a></li>");	
+					i++;
+					return;
+				}
+			});
+		}
 	}
 }
 

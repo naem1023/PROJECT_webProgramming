@@ -22,7 +22,7 @@
 			<div class="navbar-collapse collapse navbar-left">
 				<ul class="nav nav-pills">
 					<li>
-						<button type="button" class="btn btn-default navbar-btn" aria-label="">
+						<button onClick="window.location.reload(true);"type="button" class="btn btn-default navbar-btn" aria-label="">
 							<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 						</button>
 					</li>
@@ -32,12 +32,12 @@
 						</button>
 					</li>
 					<li>
-						<form class="navbar-form navbar-left">
+						<div class="navbar-form navbar-left">
         					<div class="form-group">
-         						<input type="text" class="form-control" placeholder="Search Hash Tag">
+         						<input id="hashBox" type="text" class="form-control" placeholder="Search Hash Tag">
         					</div>
-       						<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
-      					</form>
+       						<button onClick="searchHash();" type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+      					</div>
 					</li>
 				</ul>
 			</div>
@@ -112,8 +112,6 @@
 						<input id="fileUpload" type="file">
 
 						<br>
-
-						<input type="text" name="hashTag" class="form-control" placeholder="hash tag">
 						<br>
 					</div>
 
