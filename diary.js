@@ -116,30 +116,29 @@ $("#videoUpload").on('save', function(e){
 
 function hashCheck(data){
 	var hash = new Array();
-	var temp1 = new Array();
-	
-	var splitData = data.split('\n\n');
+	var _splitData = data.split('\n\n');
+	var temp = new Array();
+	var splitData = new Array();
 
-	console.log(splitData);
-
-	for(var i in splitData){
+	//remove tag
+	//split(' ')
+	_splitData.forEach(function(i){
 		i = i.replace(/(<([^>]+)>)/ig,"");
-		console.log(i);
-		temp1.push(i);
-	}
 
-	console.log(temp1);
+		temp = i.split(' ');
+		console.log(temp);
+		temp.forEach(function(j){
+			splitData.push(j);
+		});
+	});
 
-	for(var word in temp1){
+	splitData.forEach(function(word){
 		if(word.indexOf('#') == 0){
 			hash.push(word);
-		}
-	}
+		}	
+	});
 
-oriText = '<div>Remove Div tag only</div>';
-newText = oriText.replace(/(<([^>]+)>)/ig,"");
-alert(newText);
-
+	console.log("hash : " + hash);
 	return hash;
 }
 
