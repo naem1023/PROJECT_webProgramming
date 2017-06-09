@@ -19,51 +19,18 @@
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top">
 		<div class="container-fluid">
-			<div class="navbar-collapse collapse navbar-left">
-				<ul class="nav nav-pills">
-					<li>
-						<button onClick="window.location.reload(true);"type="button" class="btn btn-default navbar-btn" aria-label="">
-							<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-						</button>
-					</li>
-					<li>
-						<button type="button" onClick="newDiary();" class="btn btn-default navbar-btn" aria-label="">
-							<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-						</button>
-					</li>
-					<li>
-						<div class="navbar-form navbar-left">
-        					<div class="form-group">
-         						<input id="hashBox" type="text" class="form-control" placeholder="Search Hash Tag">
-        					</div>
-       						<button onClick="searchHash();" type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
-      					</div>
-					</li>
-				</ul>
-			</div>
+			<button onClick="window.location.reload(true);" type="button" class="btn btn-default navbar-btn" aria-label="">
+				<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+			</button>
+			<button type="button" onClick="newDiary();" class="btn btn-default navbar-btn" aria-label="">
+				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+			</button>
+			<input id="hashBox" type="text" class="form-control" placeholder="Search Hash Tag">
 
-			<div class="navbar-collapse collapse navbar-right">
-				<ul class="nav navbar-nav">
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-							<span class="glyphicon glyphicon-user"></span>
-							<span id="currUserName">
-
-							</span>
-							<span class="caret"></span>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a href="">Members</a></li>
-							<li><a id="signOut">Sign Out</a></li>
-						</ul>
-					</li>
-				</ul>
-			</div>
-
+			<button id="searchButton" onClick="searchHash();" type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
 		</div>
-
 	</nav>
-
+	<br>
 	<div class="container">
 		<div class="row">
 			<div class="col-md-6 panel panel-default">

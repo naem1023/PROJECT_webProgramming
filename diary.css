@@ -54,3 +54,14 @@ body{
 #imgBox{
 	width: 100px;
 }
+
+#hashBox{
+	position: relative;
+	display: inline-block;
+	width: 150px;
+}
+
+#searchButton{
+	position: relative;
+	display: inline-block;
+}
