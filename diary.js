@@ -111,21 +111,32 @@ function videoUpload(){
 
 function hashCheck(data){
 	var hash = new Array();
-	var _splitData = data.split('\n\n');
+	var firstSplit = data.split('\n\n');
+	var secondSplit = new Array();
 	var temp = new Array();
 	var splitData = new Array();
 
 	//remove tag
 	//split(' ')
-	_splitData.forEach(function(i){
+	firstSplit.forEach(function(i){
 		i = i.replace(/(<([^>]+)>)/ig,"");
 
 		temp = i.split(' ');
-		console.log(temp);
+		
+		temp.forEach(function(j){
+			secondSplit.push(j);
+		});
+	});
+
+	secondSplit.forEach(function(i){
+		temp = i.split('\n');
+		
 		temp.forEach(function(j){
 			splitData.push(j);
 		});
 	});
+
+
 
 	splitData.forEach(function(word){
 		if(word.indexOf('#') == 0){
@@ -142,14 +153,24 @@ var database = firebase.database();
 
 function saveClick(){
 	var ref = database.ref('diary');
-	var text = CKEDITOR.instances.editor.getData();
+
 	var title = $('#title').val();
+	console.log("title : " + title);
+	if(title == ""){
+		alert("일기장의 제목을 입력해주세요.");
+		return;
+	}
+
+	var text = CKEDITOR.instances.editor.getData();
+
+	
 	var hash = hashCheck(text);
 
   var t = new Date();
   //var now = new Date(t.getFullYear(), t.getMonth(), t.getDate(), t.getHours(), t.getMinutes(), t.getSeconds());
   console.log(hash);
   now = -(t.getTime());
+
   var param = {
   	title : title,
   	content : text,
@@ -182,6 +203,8 @@ function saveClick(){
 	file = null;
 	img = null;
 	video = null;
+
+	window.scrollTo(0,0);
 }
 
 
@@ -265,6 +288,8 @@ function printDiaryList(data, hash){
 	var hashString = null;
 	//temp is key
 
+	if(data == null)
+		return;
 	data = order(data);
 	//if hash saerch button isn't clicked
 	if(hash == null){
