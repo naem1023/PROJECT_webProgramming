@@ -160,8 +160,10 @@ function saveClick(){
   	hash : hash,
   };
   
-  var key = ref.push().key;
-  currDiaryKey = key;
+  if(currDiaryKey == null){
+  	var key = ref.push().key;
+  	currDiaryKey = key;
+  }
 
 	imgUpload();
 	fileUpload();
@@ -190,8 +192,8 @@ var dbRef = firebase.database().ref('diary');
 
 function searchHash(){
 	var hash = $("#hashBox").val();
-	hash = "#" + hash + "\n";
-	dbRef.orderByChild("date").once('value').then(function(snapshot){
+	hash = "#" + hash;
+	dbRef.once('value').then(function(snapshot){
 		printDiaryList(snapshot.val(), hash);
 	});
 }
@@ -208,7 +210,7 @@ $("#diaryList").scroll(
 		if(maxHeight <= currScroll){
 			console.log("----------------------------------------");
 			countList += 5;
-			dbRef.orderByChild("date").once('value').then(function(snapshot){
+			dbRef.once('value').then(function(snapshot){
 				printDiaryList(snapshot.val(), null);
 			});
 		}
@@ -217,7 +219,7 @@ $("#diaryList").scroll(
 
 //diary update(list update)
 //when db is changed, 'value' event occur
-dbRef.orderByChild("date").on("value", function(data) {
+dbRef.on("value", function(data) {
 	var a = data.val();
 	/*
 	console.log(a);
@@ -237,32 +239,32 @@ function order(data){
 	var length = Object.keys(data).length;
 	var del = null;
 
+	//bubble sort
 	for(var i=0; i<length; i++){
 		for(var j in data){
 			if(data[j].date < min){
 				min = data[j].date
-				console.log("min : " + min);
 				del = j;
 			}
 		}
 		if(del != null){
-			orderData.push(data[del]);
+			orderData[del] = data[del];
 			delete data[del];
 			min = 0;
 		}
 	}
-
-	console.log(orderData);
 	return orderData;
 }
+
 //print diary list
 //demand with countList
 function printDiaryList(data, hash){
 	$("#diaryList").html(null);
 	var i = 1;
+	var diaryDate = null;
+	var hashString = null;
 	//temp is key
 
-	console.log("hash is " + hash);
 	data = order(data);
 	//if hash saerch button isn't clicked
 	if(hash == null){
@@ -270,8 +272,18 @@ function printDiaryList(data, hash){
 			if(i > countList){
 				break;
 			}
+			diaryDate = new Date(-data[temp].date);
+			hashString = "";
+			console.log(data[temp].hash);
+
+			if(data[temp].hash != null){
+				data[temp].hash.forEach(function(i){
+					hashString += i + " ";
+				});	
+			}
 			
-			$("#diaryList").append('<li class="list-group-item"><a onClick="loadDiary(&quot;' + temp + '&quot;);"><h3>' + data[temp].title + "<small>&nbsp;&nbsp;&nbsp;" + data[temp].date + "</small></h3></a></li>");	
+
+			$("#diaryList").append('<li class="list-group-item"><a onClick="loadDiary(&quot;' + temp + '&quot;);"><h3>' + data[temp].title + "<small>&nbsp;&nbsp;&nbsp;" + hashString + "&nbsp;&nbsp;" + diaryDate.toLocaleString() + "</small></h3></a></li>");	
 			i++;
 		}
 	}
@@ -282,15 +294,21 @@ function printDiaryList(data, hash){
 			if(i > countList){
 				break;
 			}
-			data[temp].hash.forEach(function(i){
-				console.log(data[temp].title + "'s hash is " + i);
-				if(i == hash){
-					console.log("same!");
-					$("#diaryList").append('<li class="list-group-item"><a onClick="loadDiary(&quot;' + temp + '&quot;);"><h3>' + data[temp].title + "<small>&nbsp;&nbsp;&nbsp;" + data[temp].date + "</small></h3></a></li>");	
-					i++;
-					return;
-				}
-			});
+			if(data[temp].hash != null){
+				data[temp].hash.forEach(function(i){
+					if(i == hash){
+						hashString = "";
+						data[temp].hash.forEach(function(i){
+							hashString += i + " ";
+						});	
+
+						diaryDate = new Date(-data[temp].date);
+						$("#diaryList").append('<li class="list-group-item"><a onClick="loadDiary(&quot;' + temp + '&quot;);"><h3>' + data[temp].title + "<small>&nbsp;&nbsp;&nbsp;" + hashString + "&nbsp;&nbsp;" + diaryDate.toLocaleString() + "</small></h3></a></li>");	
+						i++;
+						return;
+					}
+				});	
+			}
 		}
 	}
 }
@@ -301,6 +319,7 @@ function printDiaryList(data, hash){
 function loadDiary(key){
 	firebase.database().ref('diary/' + key).once('value').then(function(snapshot) {
     // handle read data.
+    console.log(key);
     var data = snapshot.val();
 		$("#title").val(data.title);
 		CKEDITOR.instances.editor.setData(data.content);
