@@ -1,5 +1,5 @@
 # PROJECT_webProgramming
-# Please read documnet of projcet
+# Please read document of projcet
 
 
 project of web programming lecture
