@@ -24,6 +24,9 @@ function newDiary(){
   imgN = null;
   file = null;
 	video = null;
+
+	var img = document.getElementById('imgBox');
+	img.src = null;
 }
 
 //file upload
@@ -34,8 +37,11 @@ var videoButton =document.getElementById('videoUpload');
 
 //object, saving files
 var img = null;
+var isImgEx = false;
 var file = null;
+var isFileEx = false;
 var video = null;
+var isVideoEx = false;
 
 fileButton.addEventListener('change', function(e){
   //get fileButton
@@ -83,7 +89,7 @@ videoButton.addEventListener('change', function(e){
 
 
 function fileUpload(){
-	if(file != null){
+	if(file != null && isFileEx == false){
 		//create storage ref
 		var storageRef = firebase.storage().ref('file/' + currDiaryKey + '/' + fileName);
 	  //Upload
@@ -92,7 +98,7 @@ function fileUpload(){
 }
 
 function imgUpload(){
-	if(img != null){
+	if(img != null && isImgEx == false){
 		//create storage ref
 		var storageRef = firebase.storage().ref('img/' + currDiaryKey + '/' + imgName);
 	  //Upload
@@ -101,7 +107,7 @@ function imgUpload(){
 }
 
 function videoUpload(){
-	if(video != null){
+	if(video != null && isVideoEx == false){
 		//create storage ref
 		var storageRef = firebase.storage().ref('video/' + currDiaryKey + '/' + videoName);
 	  //Upload
@@ -191,8 +197,9 @@ function saveClick(){
   	};
   }
   
+  var key;
   if(currDiaryKey == null){
-  	var key = ref.push().key;
+  	key = ref.push().key;
   	currDiaryKey = key;
   }
 
@@ -208,6 +215,23 @@ function saveClick(){
 	else{
 		ref.child(currDiaryKey).update(param);
 	}
+
+	if(isImgEx){
+		var hi = null;
+		if(currDiaryKey == null)
+			hi = key;
+		else
+			hi = currDiaryKey;
+
+		firebase.storage().ref().child('img/' + hi + '/' + imgName).getDownloadURL().then(function(url) {
+		  var downImg = document.getElementById('imgBox');
+		  downImg.src = url;
+		}).catch(function(error) {
+		  // Handle any errors
+		  console.log(error);
+		});	
+  }
+  
 
 	//init files' nmae
 	file = null;
@@ -352,6 +376,9 @@ function printDiaryList(data, hash){
 
 //load diary
 function loadDiary(key){
+	if(window.innerWidth < 992)
+		window.scrollTo(0,$("#diaryList").prop("scrollHeight") + 110);
+
 	firebase.database().ref('diary/' + key).once('value').then(function(snapshot) {
     // handle read data.
     console.log(key);
@@ -360,12 +387,31 @@ function loadDiary(key){
 		CKEDITOR.instances.editor.setData(data.content);
 		currDiaryKey = key;
   
+  	var downImg = document.getElementById('imgBox');
+		downImg.src = null;
+
+  	if(data.img != null){
+  		firebase.storage().ref().child('img/' + key + '/' + data.img).getDownloadURL().then(function(url) {			  
+			  downImg.src = url;
+			  isImgEx = true;
+			}).catch(function(error) {
+			  // Handle any errors
+			  console.log(error);
+			});	
+  	}
+
+  	if(data.file != null){
+  		firebase.storage().ref().child('file/' + key + '/' + data.file).getDownloadURL().then(function(url) {
+			  isFileEx = true;
+			}).catch(function(error) {
+			  // Handle any errors
+			  console.log(error);
+			});	
+  	}
+
   	if(data.img != null){
   		firebase.storage().ref().child('img/' + key + '/' + data.img).getDownloadURL().then(function(url) {
-			  // Or inserted into an <img> element:
-			  console.log("image url : " + url);
-			  var img = document.getElementById('imgBox');
-			  img.src = url;
+			  isVideoEx = true;
 			}).catch(function(error) {
 			  // Handle any errors
 			  console.log(error);
