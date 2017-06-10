@@ -162,24 +162,34 @@ function saveClick(){
 	}
 
 	var text = CKEDITOR.instances.editor.getData();
-
-	
 	var hash = hashCheck(text);
 
   var t = new Date();
   //var now = new Date(t.getFullYear(), t.getMonth(), t.getDate(), t.getHours(), t.getMinutes(), t.getSeconds());
-  console.log(hash);
-  now = -(t.getTime());
-
-  var param = {
-  	title : title,
-  	content : text,
-  	date : now,
-  	file : fileName,
-  	img : imgName,
-  	video : videoName,
-  	hash : hash,
-  };
+  var now, parm;
+   
+  if(currDiaryKey == null){
+  	now = -(t.getTime());
+  	param = {
+	  	title : title,
+	  	content : text,
+	  	date : now,
+	  	file : fileName,
+	  	img : imgName,
+	  	video : videoName,
+	  	hash : hash,
+  	};
+  }
+  else{
+  	param = {
+	  	title : title,
+	  	content : text,
+	  	file : fileName,
+	  	img : imgName,
+	  	video : videoName,
+	  	hash : hash,
+  	};
+  }
   
   if(currDiaryKey == null){
   	var key = ref.push().key;
@@ -337,7 +347,6 @@ function printDiaryList(data, hash){
 		}
 	}
 }
-
 
 
 //load diary
