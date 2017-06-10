@@ -236,12 +236,13 @@ $("#diaryList").scroll(
 		var maxHeight = $("#diaryList").prop("scrollHeight");
 		var currScroll = $("#diaryList").scrollTop() + diaryListHeight;
 
+		/*
 		console.log("maxHeight " + maxHeight);
 		console.log("scrollTop " + $("#diaryList").scrollTop());
 		console.log("diaryListHeight" + diaryListHeight);
 		console.log();
+		*/
 		if(maxHeight <= currScroll){
-			console.log("----------------------------------------");
 			countList += 5;
 			dbRef.once('value').then(function(snapshot){
 				printDiaryList(snapshot.val(), null);
